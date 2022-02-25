@@ -18,12 +18,12 @@ export default function AnswerCard({answer, index, setGame}: IAnswer){
     }
     return (
         <View style={styles.container}>
-            <Text style={styles.index}>{index}</Text> 
+            <Text style={styles.index}>{index + 1}</Text> 
             <Text style={styles.text}>{answer.factor} x {answer.state === AnswerState.WAITING  ? '?' : answer.multiplier}</Text>
             <View>
             <TextInput
                 style={[styles.input, answer.state == AnswerState.ANSWERED 
-                    ? answer.type === AnsweredType.CORRECT ?  styles.correct : styles.wrong
+                    ? answer.type == AnsweredType.CORRECT ?  styles.correct : styles.wrong
                     : {}]}
                     onChangeText={(text) => setNumber(text)}
                     value={number}
@@ -31,7 +31,11 @@ export default function AnswerCard({answer, index, setGame}: IAnswer){
                     keyboardType="numeric"
                 />
             </View>
-            <Button onPress={() => submitAnswer()} title="?" />
+            <View style={styles.buttonContainer}>
+                {answer.state === AnswerState.ANSWERING && (
+                    <Button onPress={() => submitAnswer()} title="?" />
+                )}
+            </View>
         </View>
     )
 }
@@ -68,5 +72,9 @@ const styles = StyleSheet.create({
     },
     wrong: {
         color: 'red'
+    },
+    buttonContainer:{
+        height: 50,
+        width: 30
     }
 })
