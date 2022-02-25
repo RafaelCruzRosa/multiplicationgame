@@ -4,19 +4,23 @@ import { StyleSheet, Text, TouchableHighlight, View } from "react-native"
 interface NumberPicker{
     quantity: number
     onSelect: (number: number) => void
+    step?: number
 }
 
-function NumberPicker({quantity, onSelect}: NumberPicker){
+function NumberPicker({quantity, onSelect, step}: NumberPicker){
     const [numberSelected, setNumberSelected] = useState(0)
 
     const selectNumber = (number: number) => {
         setNumberSelected(number)
-        //onSelect(number)
+        onSelect(number)
     }
 
     const render = () => {
         let numbers = []
         for(let index = 1; index <= quantity; index++){
+            if(step && index % step !== 0) {
+                continue;
+            }
             numbers.push(
             <TouchableHighlight
                 underlayColor="#DDDDDD"
