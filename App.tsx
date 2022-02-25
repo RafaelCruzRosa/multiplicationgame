@@ -6,7 +6,7 @@ import Game from './src/model/Game';
 
 
 const App = () => {
-  const [game, setGame] = useState<Game>(new Game(5, 2))
+  const [game, setGame] = useState<Game>(new Game(0, 0))
 
   return (
     <SafeAreaView style={styles.container}>
@@ -14,14 +14,14 @@ const App = () => {
       <NumberPicker quantity={9} onSelect={(number) => setGame(game.changeFactor(number))}/>
       <Text style={styles.textWhichNumber}>Quantas perguntas ?</Text>
       <NumberPicker quantity={20} step={5} onSelect={(number) => setGame(game.changeQuantityQuestions(number))}/>
+      {game.factor !== 0 && game.quantityQuestions !== 0 ? (
+
       <ScrollView style={styles.scrollContainer}>
         {game.answers?.map((answer, index) => {
-          return <AnswerCard key={index} index={index + 1} answer={answer} setGame={(newGame) => setGame(newGame)}/>
+          return <AnswerCard key={`${index}-${answer.factor}x${answer.multiplier}`} index={index} answer={answer} setGame={(newGame) => setGame(newGame)}/>
         })}
       </ScrollView>
-      <View style={{backgroundColor: 'white', width: '100%', height: 60}}>
-        <Text>Footer</Text>
-      </View>
+      ): (<View></View>)}
     </SafeAreaView>
   );
 };
