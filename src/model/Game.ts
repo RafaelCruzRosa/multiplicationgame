@@ -9,11 +9,16 @@ export default class Game {
     constructor(quantityQuestions: number, factor: number, answers?: Answer[]){
         this._quantityQuestions = quantityQuestions
         this._factor = factor
+
         let answersArray = []
         for(let index = 1; index <= quantityQuestions; index++) {
+            let answerState = AnswerState.WAITING
+            if(index == 1){
+                answerState = AnswerState.ANSWERING
+            }
             let randomNumber = Math.floor(Math.random() * 9 + 1)
             answersArray.push(
-                new Answer(this, AnswerState.WAITING , factor, randomNumber)
+                new Answer(this, answerState , factor, randomNumber)
             )
         }
         this._answers = answers ? answers : answersArray
@@ -48,33 +53,26 @@ export default class Game {
         return new Game(this._quantityQuestions, newFactor)
     }
 
-    
     submit(factorSubmit: number, answerIndex: number): Game{
         let answers = this._answers?.map((item, index) => {
-            if(index + 1 == answerIndex){
-                return this.updateCurrentAnswer(item, factorSubmit)
+            if(index === answerIndex) {
+                if(factorSubmit == (item.factor * item.multiplier)){
+                    item.setCorrect()
+                }else{
+                    item.setWrong()
+                }
             }
-            else if(index + 1 === answerIndex + 1) {
-                return this.updateNextAnswer(item)
+
+            if(index <= answerIndex) {
+                item.state = AnswerState.ANSWERED
+            }else if(index === answerIndex + 1) {
+                item.state = AnswerState.ANSWERING
+            }else {
+                item.state = AnswerState.WAITING
             }
+            
             return item
         })
-
         return new Game(this.quantityQuestions, this._factor, answers)   
-    }
-
-    updateCurrentAnswer(item: Answer, factorSubmit: number){
-        if(item.factor * item.multiplier == factorSubmit){
-            var newType = AnsweredType.CORRECT
-        }else {
-            var newType = AnsweredType.WRONG
-        }
-        var newState = AnswerState.ANSWERED
-        return new Answer(this, newState, item.factor, item.multiplier, newType)
-    }
-
-    updateNextAnswer(item: Answer) {        
-        var newState = AnswerState.ANSWERING
-        return new Answer(this, newState, item.factor, item.multiplier)
     }
 }
