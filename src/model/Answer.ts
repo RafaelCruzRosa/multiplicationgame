@@ -18,7 +18,6 @@ export default class Answer {
     private _factor: number
     private _multiplier: number
 
-
     constructor(game: Game, state = AnswerState.WAITING, factor: number, multiplier: number, type?: AnsweredType){
         this._game = game
         this._state = state
@@ -43,5 +42,15 @@ export default class Answer {
     }
     get game(){
         return this._game
+    }
+    set state(state: AnswerState){
+        this._state = state
+    }
+
+    setCorrect(){
+        this._type = AnsweredType.CORRECT
+    }
+    setWrong(){
+        this._type = AnsweredType.WRONG
     }
 }
